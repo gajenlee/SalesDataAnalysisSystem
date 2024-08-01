@@ -102,7 +102,12 @@ class Main(InterfaceOfConsole):
         super().__init__()
     
     def __chech_csv_file(self, file_name):
-        return True
+        folder_location = file_name.split("\\")
+        csv_pattern = re.compile(r".*\.csv$", re.IGNORECASE)
+        file = [file for file in folder_location if csv_pattern.match(file)]
+        if file:
+            return True
+        return False
     
     def __monthly_sales_analysis(self, csv_file, all=False):
         branch_name = None
