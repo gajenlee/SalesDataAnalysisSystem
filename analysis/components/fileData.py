@@ -20,7 +20,7 @@ class FileData:
             print("The file not found!")
     
     
-    def load_sales_data(self, file_name:str) -> list:
+    def _load_sales_data(self, file_name:str) -> list:
         sales_data = []
         try:
             with open(r"{}".format(file_name), mode='r') as file:
@@ -38,7 +38,7 @@ class FileData:
         return sales_data
             
     
-    def save_sales_data(self, file_name:str, sales_date:list, header=None):
+    def _save_sales_data(self, file_name:str, sales_date:list, header=None):
         try:
             with open(r"{}".format(file_name), mode='w', newline='') as file:
                 if header:

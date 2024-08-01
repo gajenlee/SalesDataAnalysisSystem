@@ -12,7 +12,7 @@ class WeeklySalesAnalysis(FileData):
         self.__weekly_sales_analysis_data = self.__weekly_sales_analysis(file_name)
 
     def __weekly_sales_analysis(self, file_name):
-        sales_data = self.load_sales_data(file_name)
+        sales_data = self._load_sales_data(file_name)
         weekly_sales = defaultdict(float)
 
         common_element_date = list(set(self._global_fieldname) & set(self._date))
@@ -37,4 +37,4 @@ class WeeklySalesAnalysis(FileData):
         headers = ["Week", "Sales"]
         rows = [{ "Week": datetime.strptime(week + "/1", "%Y/%W/%w").date(), "Sales":float(f"{sales:.2f}")} for week, sales in self.__weekly_sales_analysis(self.__file_name).items()]
         rows.sort(key=lambda x:x["Week"])
-        self.save_sales_data(file_name, rows, headers)
+        self._save_sales_data(file_name, rows, headers)

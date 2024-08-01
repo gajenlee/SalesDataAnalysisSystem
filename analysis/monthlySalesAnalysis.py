@@ -17,7 +17,7 @@ class MonthlySalesAnalysis(FileData):
 
 
     def __monthly_sales_all_branch(self, file_name):
-        sales_data = self.load_sales_data(file_name)
+        sales_data = self._load_sales_data(file_name)
         montly_sales = defaultdict(float)
 
         common_element_date = list(set(self._global_fieldname) & set(self._date))
@@ -35,7 +35,7 @@ class MonthlySalesAnalysis(FileData):
 
 
     def __monthly_sales_branch(self, branch, file_name):
-        sales_data = self.load_sales_data(file_name)
+        sales_data = self._load_sales_data(file_name)
         montly_sales = defaultdict(float)
 
         common_element_date = list(set(self._global_fieldname) & set(self._date))
@@ -74,4 +74,4 @@ class MonthlySalesAnalysis(FileData):
         rows.sort(key=lambda x : x['Branch'])
 
         headers = ['Branch', "Month",  'Sales']
-        self.save_sales_data(file_name, rows, headers)
+        self._save_sales_data(file_name, rows, headers)

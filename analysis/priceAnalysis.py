@@ -17,7 +17,7 @@ class PriceAnalysis(FileData):
             self.__analysis_data = self.__price_analysis(file_name, product)
 
     def __price_analysis_all(self, file_name):
-        sales_data = self.load_sales_data(file_name)
+        sales_data = self._load_sales_data(file_name)
         analysis_data = defaultdict(float)
         prices_list = defaultdict(float)
 
@@ -39,7 +39,7 @@ class PriceAnalysis(FileData):
 
     def __price_analysis(self, file_name, product):
         analysis_data = defaultdict(float)
-        sales_data = self.load_sales_data(file_name)
+        sales_data = self._load_sales_data(file_name)
         prices = [row['amount'] / row['quantity'] for row in sales_data if row['product'].lower() == product.lower()]
         if prices:
             average_price = sum(prices) / len(prices)
@@ -72,4 +72,4 @@ class PriceAnalysis(FileData):
             rows = [{ "Product": product, "Average Price":float(f"{price:.2f}")} for product, price in self.__price_analysis_all(self.__file_name).items()]
 
         headers = ["Product", "Average Price"]
-        self.save_sales_data(file_name, rows, headers)
+        self._save_sales_data(file_name, rows, headers)

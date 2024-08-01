@@ -13,7 +13,7 @@ class ProdectPreferenceAnalysis(FileData):
 
     
     def __prodect_preference_analysis(self, file_name):
-        sales_data = self.load_sales_data(file_name)
+        sales_data = self._load_sales_data(file_name)
         product_sales = defaultdict(float)
 
         common_element_product = list(set(self._global_fieldname) & set(self._product))
@@ -42,4 +42,4 @@ class ProdectPreferenceAnalysis(FileData):
     def save_analysis(self, file_name):
         headers = ['Product', "Quantity"]
         rows = [{ "Product": product, "Quantity":int(qty)} for product, qty in self.__prodect_preference_analysis(self.__file_name).items()]
-        self.save_sales_data(file_name, rows, headers)
+        self._save_sales_data(file_name, rows, headers)

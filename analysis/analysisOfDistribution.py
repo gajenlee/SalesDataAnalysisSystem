@@ -11,7 +11,7 @@ class AnalysisOfDistribution(FileData):
         self.__distribution_analysis_data = self.__distribution_analysis(file_name)
     
     def __distribution_analysis(self, file_name):
-        sales_data = self.load_sales_data(file_name)
+        sales_data = self._load_sales_data(file_name)
 
         common_element_branch = list(set(self._global_fieldname) & set(self._branch))
         common_element_amount = list(set(self._global_fieldname) & set(self._amount))
@@ -49,4 +49,4 @@ class AnalysisOfDistribution(FileData):
     def save_analysis(self, file_name):
         headers = ['Branch', 'Amount', 'Percentage']
         rows = [{ "Branch": branch, "Amount":float(f"{data['amount']:.2f}"), "Percentage":f"{data['percentage']:.2f}%"} for branch, data in self.__distribution_analysis_data.items()]
-        self.save_sales_data(file_name, rows, headers)
+        self._save_sales_data(file_name, rows, headers)
