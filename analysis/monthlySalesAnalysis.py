@@ -1,7 +1,8 @@
 from .components.fileData import *
 from tabulate import tabulate
+from .analysis import Analysis
 
-class MonthlySalesAnalysis(FileData):
+class MonthlySalesAnalysis(FileData, Analysis):
     __branch_sales_analysis = defaultdict(float)
     __file_name = None
     __branch_name = None
@@ -67,7 +68,7 @@ class MonthlySalesAnalysis(FileData):
         print(tabulate(rows, headers=headers, tablefmt="grid"))
     
     def save_analysis(self, file_name, all=False):
-        if all and self.__branch_name:
+        if all == False and self.__branch_name:
             rows = [{ "Branch": branch.split("-")[0], "Month":datetime.strptime(branch.split("-")[-1], "%Y/%m").date(), "Sales": float(f"{sales:.2f}")} for branch, sales in self.__monthly_sales_branch(self.__branch_name, self.__file_name).items()]
         else:
             rows = [{ "Branch": branch.split("-")[0], "Month":datetime.strptime(branch.split("-")[-1], "%Y/%m").date(), "Sales": float(f"{sales:.2f}")} for branch, sales in self.__monthly_sales_all_branch(self.__file_name).items()]

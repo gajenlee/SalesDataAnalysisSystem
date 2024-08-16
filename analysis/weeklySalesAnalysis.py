@@ -1,7 +1,9 @@
 from .components.fileData import *
 from tabulate import tabulate
+from .analysis import Analysis
 
-class WeeklySalesAnalysis(FileData):
+
+class WeeklySalesAnalysis(FileData, Analysis):
     
     __weekly_sales_analysis_data = None
     __file_name = None

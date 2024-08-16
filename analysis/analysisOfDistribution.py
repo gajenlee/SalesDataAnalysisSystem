@@ -1,7 +1,8 @@
 from .components.fileData import *
 from tabulate import tabulate
+from .analysis import Analysis
 
-class AnalysisOfDistribution(FileData):
+class AnalysisOfDistribution(FileData, Analysis):
     __distribution_analysis_data = None
     __file_name = None
 

@@ -1,7 +1,8 @@
 from .components.fileData import *
 from tabulate import tabulate
+from .analysis import Analysis
 
-class ProdectPreferenceAnalysis(FileData):
+class ProdectPreferenceAnalysis(FileData, Analysis):
     
     __prodect_preference_analysis_data = None
     __file_name = None
