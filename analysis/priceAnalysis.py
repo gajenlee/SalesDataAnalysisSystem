@@ -1,7 +1,8 @@
 from tabulate import tabulate
 from .components.fileData import *
+from .analysis import Analysis
 
-class PriceAnalysis(FileData):
+class PriceAnalysis(FileData, Analysis):
     
     __analysis_data = None
     __file_name = None
