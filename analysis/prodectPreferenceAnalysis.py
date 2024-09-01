@@ -2,6 +2,11 @@ from .components.fileData import *
 from tabulate import tabulate
 from .analysis import Analysis
 
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
 class ProdectPreferenceAnalysis(FileData, Analysis):
     
     __prodect_preference_analysis_data = None
@@ -44,3 +49,6 @@ class ProdectPreferenceAnalysis(FileData, Analysis):
         headers = ['Product', "Quantity"]
         rows = [{ "Product": product, "Quantity":int(qty)} for product, qty in self.__prodect_preference_analysis(self.__file_name).items()]
         self._save_sales_data(file_name, rows, headers)
+    
+    def display_graph(self):
+        pass

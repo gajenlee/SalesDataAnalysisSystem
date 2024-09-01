@@ -3,6 +3,9 @@ from tabulate import tabulate
 from .analysis import Analysis
 
 
+import pandas as pd
+import matplotlib.pyplot as plt
+
 class WeeklySalesAnalysis(FileData, Analysis):
     
     __weekly_sales_analysis_data = None
@@ -40,3 +43,6 @@ class WeeklySalesAnalysis(FileData, Analysis):
         rows = [{ "Week": datetime.strptime(week + "/1", "%Y/%W/%w").date(), "Sales":float(f"{sales:.2f}")} for week, sales in self.__weekly_sales_analysis(self.__file_name).items()]
         rows.sort(key=lambda x:x["Week"])
         self._save_sales_data(file_name, rows, headers)
+    
+    def display_graph(self):
+        pass

@@ -9,3 +9,7 @@ class Analysis(ABC):
     @abstractmethod
     def save_analysis(self):
         raise NotImplementedError
+    
+    @abstractmethod
+    def display_graph(self):
+        raise NotImplementedError

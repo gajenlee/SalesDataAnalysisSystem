@@ -2,6 +2,9 @@ from .components.fileData import *
 from tabulate import tabulate
 from .analysis import Analysis
 
+import pandas as pd
+import matplotlib.pyplot as plt
+
 class AnalysisOfDistribution(FileData, Analysis):
     __distribution_analysis_data = None
     __file_name = None
@@ -51,3 +54,6 @@ class AnalysisOfDistribution(FileData, Analysis):
         headers = ['Branch', 'Amount', 'Percentage']
         rows = [{ "Branch": branch, "Amount":float(f"{data['amount']:.2f}"), "Percentage":f"{data['percentage']:.2f}%"} for branch, data in self.__distribution_analysis_data.items()]
         self._save_sales_data(file_name, rows, headers)
+
+    def display_graph(self):
+        pass

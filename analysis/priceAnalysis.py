@@ -2,6 +2,9 @@ from tabulate import tabulate
 from .components.fileData import *
 from .analysis import Analysis
 
+import pandas as pd
+import matplotlib.pyplot as plt
+
 class PriceAnalysis(FileData, Analysis):
     
     __analysis_data = None
@@ -74,3 +77,6 @@ class PriceAnalysis(FileData, Analysis):
 
         headers = ["Product", "Average Price"]
         self._save_sales_data(file_name, rows, headers)
+    
+    def display_graph(self):
+        pass

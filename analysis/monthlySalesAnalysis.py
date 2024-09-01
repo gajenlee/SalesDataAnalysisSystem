@@ -2,6 +2,10 @@ from .components.fileData import *
 from tabulate import tabulate
 from .analysis import Analysis
 
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
 class MonthlySalesAnalysis(FileData, Analysis):
     __branch_sales_analysis = defaultdict(float)
     __file_name = None
@@ -76,3 +80,6 @@ class MonthlySalesAnalysis(FileData, Analysis):
 
         headers = ['Branch', "Month",  'Sales']
         self._save_sales_data(file_name, rows, headers)
+    
+    def display_graph(self):
+        pass
