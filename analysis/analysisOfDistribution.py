@@ -4,6 +4,9 @@ from .analysis import Analysis
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
+import numpy as np
 
 class AnalysisOfDistribution(FileData, Analysis):
     __distribution_analysis_data = None
@@ -52,8 +55,42 @@ class AnalysisOfDistribution(FileData, Analysis):
 
     def save_analysis(self, file_name):
         headers = ['Branch', 'Amount', 'Percentage']
-        rows = [{ "Branch": branch, "Amount":float(f"{data['amount']:.2f}"), "Percentage":f"{data['percentage']:.2f}%"} for branch, data in self.__distribution_analysis_data.items()]
+        rows = [
+            { 
+                "Branch": branch, 
+                "Amount":float(f"{data['amount']:.2f}"), 
+                "Percentage":f"{data['percentage']:.2f}%"
+            } 
+            for branch, data in self.__distribution_analysis_data.items()]
         self._save_sales_data(file_name, rows, headers)
 
     def display_graph(self):
-        pass
+
+        plt.subplots_adjust(bottom=0.487, left=0.127)
+
+        rows = [[branch, float(f"{data['amount']:.3f}")] for branch, data in self.__distribution_analysis_data.items()]
+        x = [row[0] for row in rows]
+        y = [round(row[-1]) for row in rows]
+        plt.plot(x, y, marker='o')
+
+        # Apply the formatter to the y-axis
+        plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(self.__millions))
+
+        # Rotate x-axis labels to prevent overlap
+        plt.xticks(rotation=45, ha='right')  # Rotate by 45 degrees, align to the right
+
+        plt.title('Distribution Analysis')
+        plt.xlabel('Branch')
+        plt.ylabel('Amount')
+        plt.grid(True)
+        plt.show()
+    
+    # Define a custom format function
+    def __millions(self, x, pos):
+        """
+        Convert to millions and add 'M'
+
+        """
+
+        return f'{x * 1e-6:.1f}M' 
+        

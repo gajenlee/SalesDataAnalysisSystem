@@ -48,7 +48,7 @@ class InterfaceOfConsole:
 2. Monthly Analysis For All Branch
 3. Back
         """
-        self._print(" *** Monthly Sales Analysis **** ", alignment='center', color=Fore.GREEN, width=100)
+        self._print(" *** Monthly Sales Analysis *** ", alignment='center', color=Fore.GREEN, width=100)
         self._print(text, alignment='left')
     
     def _price_analysis_menu(self):
@@ -60,6 +60,16 @@ class InterfaceOfConsole:
         """
         self._print(" *** Price Analysis *** ", alignment='center', color=Fore.GREEN, width=100)
         self._print(text, alignment='left')
+
+    def _view_analysis(self):
+        self._opening_header()
+        text = """
+\n1. Table View
+2. Graph View
+3. Back
+"""
+        self._print(" *** Data View *** ", alignment='center', color=Fore.GREEN, width=100)
+        self._print(text, alignment="left")
     
     def _main_opening_menu(self):
         self._opening_header()
@@ -193,15 +203,26 @@ class Main(InterfaceOfConsole):
     def __distribution_analysis(self, csv_file):
         distribution = AnalysisOfDistribution(csv_file)
         print()
-        distribution.display_analysis()
-        if self._user_to_ask():
-            path = str(self._input("Enter save location (X:\\folder name\\) > "))
-            path = self.__location_replacer(path, "DistributioAnalysis.csv")
-            if path:
-                distribution.save_analysis(path)
-            else:
-                self._print("The loaction is not found !", alignment='center', color=Fore.RED)
-                input("\nPress enter to continue....")
+
+        self._view_analysis()
+        val = int(self._input())
+        if val == 1:
+            distribution.display_analysis()
+        
+            if self._user_to_ask():
+                path = str(self._input("Enter save location (X:\\folder name\\) > "))
+                path = self.__location_replacer(path, "DistributioAnalysis.csv")
+                if path:
+                    distribution.save_analysis(path)
+                else:
+                    self._print("The loaction is not found !", alignment='center', color=Fore.RED)
+                    input("\nPress enter to continue....")
+        
+        elif val == 2:
+            distribution.display_graph()
+        
+        else:
+            pass
 
     def __location_replacer(self, path, file_name):
         folder_location = path.split("\\")
