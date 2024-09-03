@@ -12,6 +12,7 @@ class WeeklySalesAnalysis(FileData, Analysis):
     
     __weekly_sales_analysis_data = None
     __file_name = None
+    __headers = ["Week", "Sales"]
 
     def __init__(self, file_name):
         super().__init__(file_name)
@@ -29,43 +30,57 @@ class WeeklySalesAnalysis(FileData, Analysis):
             if common_element_date:
                 week = row[common_element_date[0]].strftime('%Y/%U')
                 weekly_sales[week] += row[common_element_amount[0]]
-        return weekly_sales
 
-    def display_analysis(self):
-        # Prepare the data for tabulate
-        headers = ["Week", "Sales"]
-        rows = [(week, f"{sales:,.2f}") for week, sales in self.__weekly_sales_analysis_data.items()]
-        rows.sort()
-
-        # Print the table
-        print(tabulate(rows, headers=headers, tablefmt="grid"))
-    
-    def save_analysis(self, file_name):
-        headers = ["Week", "Sales"]
-        rows = [
-            { 
-                "Week": datetime.strptime(week + "/1", "%Y/%W/%w").date(), 
-                "Sales":float(f"{sales:.2f}")
-            } 
-            for week, sales in self.__weekly_sales_analysis(self.__file_name).items()
-        ]
-        rows.sort(key=lambda x:x["Week"])
-        self._save_sales_data(file_name, rows, headers)
-    
-    def display_graph(self):
         rows = [
             [ 
                 datetime.strptime(week + "/1", "%Y/%W/%w").date(), 
                 float(f"{sales:.2f}")
             ] 
-            for week, sales in self.__weekly_sales_analysis(self.__file_name).items()
+            for week, sales in weekly_sales.items()
+        ]
+        return self._clear_data(rows, self.__headers).to_dict()
+
+    def display_analysis(self):
+        # Prepare the data for tabulate
+        rows = [(week[-1], f"{sales[-1]:,.2f}") for week, sales in zip(
+            self.__weekly_sales_analysis_data[self.__headers[0]].items(),
+            self.__weekly_sales_analysis_data[self.__headers[-1]].items()
+            )]
+        rows.sort()
+
+        # Print the table
+        print(tabulate(rows, headers=self.__headers, tablefmt="grid"))
+    
+    def save_analysis(self, file_name):
+        rows = [
+            { 
+                "Week": week[-1], 
+                "Sales":float(f"{sales[-1]:.2f}")
+            } 
+            for week, sales in zip(
+            self.__weekly_sales_analysis_data[self.__headers[0]].items(),
+            self.__weekly_sales_analysis_data[self.__headers[-1]].items()
+            )
+        ]
+        rows.sort(key=lambda x:x["Week"])
+        self._save_sales_data(file_name, rows, self.__headers)
+    
+    def display_graph(self):
+        rows = [
+            [ 
+                week[-1], 
+                float(f"{sales[-1]:.2f}")
+            ] 
+            for week, sales in zip(
+            self.__weekly_sales_analysis_data[self.__headers[0]].items(),
+            self.__weekly_sales_analysis_data[self.__headers[-1]].items()
+            )
         ]
         x_values = [row[0] for row in rows]
         y_values = [row[1] for row in rows]
 
         fig, ax = plt.subplots()
         scatter = ax.scatter(x_values, y_values, marker='o')
-
         # Apply the formatter to the y-axis
         plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(self.__millions))
 
@@ -76,6 +91,7 @@ class WeeklySalesAnalysis(FileData, Analysis):
             index = int(mousePoint.index)
             mousePoint.annotation.set(text=f"Week: {x_values[index]}\nSale: {y_values[index]:,.2f}", fontsize=10)
 
+        
         plt.title("Weekly Sales Analysis")
         plt.xlabel("Week (Count)")
         plt.ylabel("Sales (Amount)")

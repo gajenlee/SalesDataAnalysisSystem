@@ -12,6 +12,7 @@ class ProdectPreferenceAnalysis(FileData, Analysis):
     
     __prodect_preference_analysis_data = None
     __file_name = None
+    __headers = ['Product', "Quantity"]
 
     def __init__(self, file_name):
         super().__init__(file_name)
@@ -29,41 +30,47 @@ class ProdectPreferenceAnalysis(FileData, Analysis):
         for row in sales_data:
             if common_element_product:
                 product_sales[row[common_element_product[0]]] += row[common_element_qty[0]]
-        return product_sales
+        
+        rows = [
+            [product, qty]
+            for product, qty in product_sales.items()
+        ]
+        rows.sort()
+
+        return self._clear_data(rows, self.__headers).to_dict()
 
     def display_analysis(self):
 
-        # Extract headers
-        headers = ['Product', "Quantity"]
-
         # Extract rows
         rows = [
-            [product, qty]
-            for product, qty in self.__prodect_preference_analysis_data.items()
+            [product[-1], qty[-1]]
+            for product, qty in zip(self.__prodect_preference_analysis_data[self.__headers[0]].items(),
+                                    self.__prodect_preference_analysis_data[self.__headers[1]].items())
         ]
         rows.sort()
 
         # Print the table
-        print(tabulate(rows, headers=headers, tablefmt="grid"))
+        print(tabulate(rows, headers=self.__headers, tablefmt="grid"))
     
     def save_analysis(self, file_name):
-        headers = ['Product', "Quantity"]
         rows = [
             { 
-                "Product": product, 
-                "Quantity":int(qty)
+                "Product": product[-1], 
+                "Quantity":int(qty[-1])
             } 
-            for product, qty in self.__prodect_preference_analysis(self.__file_name).items()
+            for product, qty in zip(self.__prodect_preference_analysis_data[self.__headers[0]].items(),
+                                    self.__prodect_preference_analysis_data[self.__headers[1]].items())
         ]
-        self._save_sales_data(file_name, rows, headers)
+        self._save_sales_data(file_name, rows, self.__headers)
     
     def display_graph(self):
         rows = [
             [ 
-                product, 
-                int(qty)
+                product[-1], 
+                int(qty[-1])
             ] 
-            for product, qty in self.__prodect_preference_analysis(self.__file_name).items()
+            for product, qty in zip(self.__prodect_preference_analysis_data[self.__headers[0]].items(),
+                                    self.__prodect_preference_analysis_data[self.__headers[1]].items())
         ]
 
         x_values = [x[0] for x in rows]

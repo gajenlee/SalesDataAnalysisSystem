@@ -149,17 +149,14 @@ class Main(InterfaceOfConsole):
                     path = str(self._input("Enter save location (X:\\folder name\\) > "))
                     path = self.__location_replacer(path, "Monthly-Sales-Analysis.csv")
                     if path:
-                        monthly_sales.save_analysis(path, all=True)
+                        monthly_sales.save_analysis(path)
                     else:
                         self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                         input("\nPress enter to continue....")
         
         elif val == 2:
-            if branch_name:
-                monthly_sales.display_graph()
-            else:
-                monthly_sales.display_graph(all=True)
-        
+            monthly_sales.display_graph()
+            
         else:
             pass
 
@@ -191,15 +188,12 @@ class Main(InterfaceOfConsole):
                     path = str(self._input("Enter save location (X:\\folder name\\) > "))
                     path = self.__location_replacer(path, "Price-Analysis.csv")
                     if path:
-                        price.save_analysis(path, all=True)
+                        price.save_analysis(path)
                     else:
                         self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                         input("\nPress enter to continue....")
         elif val == 2:
-            if product_name:
-                price.display_graph()
-            else:
-                price.display_graph(all=True)
+            price.display_graph()
 
         else:
             pass

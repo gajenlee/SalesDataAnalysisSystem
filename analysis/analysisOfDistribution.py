@@ -5,6 +5,7 @@ from .analysis import Analysis
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+import seaborn as sns
 
 import numpy as np
 
@@ -38,11 +39,11 @@ class AnalysisOfDistribution(FileData, Analysis):
                         "percentage": (row[common_element_amount[0]] / total_sales) * 100
                     }
         
-        return distribution
+        return self._clear_data(distribution).to_dict()
 
     def display_analysis(self):
         # Extract headers
-        headers = ['Branch', 'Amount', 'Percentage']
+        headers = ['Branch', 'Amount', 'Percentage']        
 
         # Extract rows
         rows = [

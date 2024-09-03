@@ -11,6 +11,7 @@ class PriceAnalysis(FileData, Analysis):
     __analysis_data = None
     __file_name = None
     __product_name = None
+    __headers = ['Product', "Average Price"]
 
     def __init__(self, file_name, product=None):
         super().__init__(file_name)
@@ -39,7 +40,13 @@ class PriceAnalysis(FileData, Analysis):
         
         for product in prices_list:
             analysis_data[product] = sum(prices_list[product]) / len(prices_list[product])
-        return analysis_data 
+
+        rows = [
+            [product, avg]
+            for product, avg in analysis_data.items()
+        ]
+
+        return self._clear_data(rows, self.__headers).to_dict() 
         
 
     def __price_analysis(self, file_name, product):
@@ -53,59 +60,52 @@ class PriceAnalysis(FileData, Analysis):
         else:
             average_price = 0
             analysis_data[product] = average_price
+        
+        rows = [
+            [product, avg]
+            for product, avg in analysis_data.items()
+        ]
 
-        return analysis_data
+        return self._clear_data(rows, self.__headers).to_dict() 
 
     def display_analysis(self):
-        # Extract headers
-        headers = ['Product', "Average Price"]
 
         # Extract rows
         rows = [
-            [product, f"{avg:,.2f}"]
-            for product, avg in self.__analysis_data.items()
+            [product[-1], f"{avg[-1]:,.2f}"]
+            for product, avg in zip(
+                self.__analysis_data[self.__headers[0]].items(),
+                self.__analysis_data[self.__headers[-1]].items())
         ]
         rows.sort()
 
         # Print the table
-        print(tabulate(rows, headers=headers, tablefmt="grid"))
+        print(tabulate(rows, headers=self.__headers, tablefmt="grid"))
 
-    def save_analysis(self, file_name, all=False):
-        if all and self.__product_name:
-            rows = [
-                { 
-                    "Product": product, 
-                    "Average Price":float(f"{price:.2f}")
-                } 
-                for product, price in self.__price_analysis(self.__file_name, self.__product_name).items()
-            ]
-        else:
-            rows = [
-                { 
-                    "Product": product, 
-                    "Average Price":float(f"{price:.2f}")
-                } for product, price in self.__price_analysis_all(self.__file_name).items()
-            ]
-
-        headers = ["Product", "Average Price"]
-        self._save_sales_data(file_name, rows, headers)
+    def save_analysis(self, file_name):
+        # Extract rows
+        rows = [
+            { 
+                "Product": product[-1], 
+                "Average Price":float(f"{avg[-1]:.2f}")
+            }
+            for product, avg in zip(
+                self.__analysis_data[self.__headers[0]].items(),
+                self.__analysis_data[self.__headers[-1]].items())
+        ]
+        rows.sort(key=lambda x : x[self.__headers[0]])
+        self._save_sales_data(file_name, rows, self.__headers)
     
-    def display_graph(self, all=False):
-        if all:
-            rows = [
-                [ 
-                    product, 
-                    float(f"{price:.2f}")
-                ] for product, price in self.__price_analysis_all(self.__file_name).items()
+    def display_graph(self):
+        rows = [
+            [ 
+                product[-1], 
+                float(f"{avg[-1]:.2f}")
             ]
-        else:
-            rows = [
-                [ 
-                    product, 
-                    float(f"{price:.2f}")
-                ] 
-                for product, price in self.__price_analysis(self.__file_name, self.__product_name).items()
-            ]
+            for product, avg in zip(
+                self.__analysis_data[self.__headers[0]].items(),
+                self.__analysis_data[self.__headers[-1]].items())
+        ]
         
         x_value = [x[0] for x in rows]
         y_value = [y[1] for y in rows]

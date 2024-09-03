@@ -15,6 +15,7 @@ class MonthlySalesAnalysis(FileData, Analysis):
     __branch_sales_analysis = defaultdict(float)
     __file_name = None
     __branch_name = None
+    __headers = ['Branch', "Month",  'Sales']
 
     def __init__(self, file_name, branch_name = None):
         super().__init__(file_name)
@@ -41,7 +42,13 @@ class MonthlySalesAnalysis(FileData, Analysis):
                     montly_sales[branch_name] += row[common_element_amount[0]]
                 except:
                     montly_sales[branch_name] = row[common_element_amount[0]]
-        return montly_sales
+        
+        rows = [
+            [branch.split('-')[0], branch.split('-')[-1], sales]
+            for branch, sales in montly_sales.items()
+        ]
+
+        return self._clear_data(rows, self.__headers).to_dict()
 
 
     def __monthly_sales_branch(self, branch, file_name):
@@ -60,68 +67,55 @@ class MonthlySalesAnalysis(FileData, Analysis):
                         montly_sales[branch_name] += row[common_element_amount[0]]
                     except Exception as e:
                         montly_sales[branch_name] = row[common_element_amount[0]]
-        return montly_sales
+
+        rows = [
+            [branch.split('-')[0], branch.split('-')[-1], sales]
+            for branch, sales in montly_sales.items()
+        ]
+
+        return self._clear_data(rows, self.__headers).to_dict()
 
     def display_analysis(self):
-        # Extract headers
-        headers = ['Branch-Month', "Month",  'Sales']
 
         # Extract rows
-        rows = [
-            [branch.split('-')[0], branch.split('-')[-1], f"{sales:,.2f}"]
-            for branch, sales in self.__branch_sales_analysis.items()
-        ]
+        rows = [[branch[-1], month[-1], sale[-1]] for branch, month, sale in zip(
+                        self.__branch_sales_analysis[self.__headers[0]].items(),
+                        self.__branch_sales_analysis[self.__headers[1]].items(),
+                        self.__branch_sales_analysis[self.__headers[-1]].items())]
+
         rows.sort()
-
         # Print the table
-        print(tabulate(rows, headers=headers, tablefmt="grid"))
+        print(tabulate(rows, headers=self.__headers, tablefmt="grid"))
     
-    def save_analysis(self, file_name, all=False):
-        print(self.__file_name)
-        if all == False and self.__branch_name:
-            rows = [
-                { 
-                    "Branch": branch.split("-")[0], 
-                    "Month":datetime.strptime(branch.split("-")[-1], "%Y/%m").date(), 
-                    "Sales": float(f"{sales:.2f}")
-                } 
-                for branch, sales in self.__monthly_sales_branch(self.__branch_name, self.__file_name).items()
-            ]
+    def save_analysis(self, file_name):
+        
+        rows = [
+            { 
+                "Branch": branch[-1], 
+                "Month":datetime.strptime(month[-1], "%Y/%m").date(), 
+                "Sales": float(f"{sales[-1]:.2f}")
+            } 
+            for branch, month, sales in zip(self.__branch_sales_analysis[self.__headers[0]].items(),
+                                     self.__branch_sales_analysis[self.__headers[1]].items(),
+                                     self.__branch_sales_analysis[self.__headers[-1]].items())
+        ]
 
-        else:
-            rows = [
-                { 
-                    "Branch": branch.split("-")[0], 
-                    "Month":datetime.strptime(branch.split("-")[-1], "%Y/%m").date(), 
-                    "Sales": float(f"{sales:.2f}")
-                } 
-                for branch, sales in self.__monthly_sales_all_branch(self.__file_name).items()
-            ]
 
         rows.sort(key=lambda x : x['Branch'])
-
-        headers = ['Branch', "Month",  'Sales']
-        self._save_sales_data(file_name, rows, headers)
+        self._save_sales_data(file_name, rows, self.__headers)
     
-    def display_graph(self, all=False):
-        if all:
-            rows = [
-                [ 
-                    datetime.strptime(branch.split("-")[-1], "%Y/%m").date(),
-                    float(f"{sales:.2f}"),
-                    branch.split("-")[0]
-                ]
-                for branch, sales in self.__monthly_sales_all_branch(self.__file_name).items()
-            ]
-        else:
-            rows = [
-                [ 
-                    datetime.strptime(branch.split("-")[-1], "%Y/%m").date(),
-                    float(f"{sales:.2f}"),
-                    branch.split("-")[0]
-                ]
-                for branch, sales in self.__monthly_sales_branch(self.__branch_name, self.__file_name).items()
-            ]
+    def display_graph(self):
+
+        rows = [
+            [ 
+                datetime.strptime(month[-1], "%Y/%m").date(), 
+                float(f"{sales[-1]:.2f}"),
+                branch[-1]
+            ] 
+            for branch, month, sales in zip(self.__branch_sales_analysis[self.__headers[0]].items(),
+                                     self.__branch_sales_analysis[self.__headers[1]].items(),
+                                     self.__branch_sales_analysis[self.__headers[-1]].items())
+        ]
         
         x_value = [x[0] for x in rows] # Month
         y_value = [y[1] for y in rows] # Sales Amounts
