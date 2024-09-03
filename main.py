@@ -206,16 +206,24 @@ class Main(InterfaceOfConsole):
     
     def __weekly_sales_analysis(self, csv_file):
         weekly_analysis = WeeklySalesAnalysis(csv_file)
-        print()
-        weekly_analysis.display_analysis()
-        if self._user_to_ask():
-            path = str(self._input("Enter save location (X:\\folder name\\) > "))
-            path = self.__location_replacer(path, "Weekly-Sales-Analysis.csv")
-            if path:
-                weekly_analysis.save_analysis(path)
-            else:
-                self._print("The loaction is not found !", alignment='center', color=Fore.RED)
-                input("\nPress enter to continue....")
+        self._view_analysis()
+        val = int(self._input())
+
+        if val == 1:
+            print()
+            weekly_analysis.display_analysis()
+            if self._user_to_ask():
+                path = str(self._input("Enter save location (X:\\folder name\\) > "))
+                path = self.__location_replacer(path, "Weekly-Sales-Analysis.csv")
+                if path:
+                    weekly_analysis.save_analysis(path)
+                else:
+                    self._print("The loaction is not found !", alignment='center', color=Fore.RED)
+                    input("\nPress enter to continue....")
+        elif val == 2:
+            weekly_analysis.display_graph()
+        else:
+            pass
 
     def __product_perference_analysis(self, csv_file):
         product_per = ProdectPreferenceAnalysis(csv_file)
