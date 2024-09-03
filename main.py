@@ -121,31 +121,47 @@ class Main(InterfaceOfConsole):
     
     def __monthly_sales_analysis(self, csv_file, all=False):
         branch_name = None
+        monthly_sales = None
+
         if all:
             monthly_sales = MonthlySalesAnalysis(csv_file)
         else:
             branch_name = str(self._input("Enter the branch name > "))
             monthly_sales = MonthlySalesAnalysis(csv_file, branch_name)
         print()
-        monthly_sales.display_analysis()
 
-        if self._user_to_ask():
+        self._view_analysis()
+        val = int(self._input())
+        if val == 1:
+            
+            monthly_sales.display_analysis()
+
+            if self._user_to_ask():
+                if branch_name:
+                    path = str(self._input("Enter save location (X:\\folder name\\) > "))
+                    path = self.__location_replacer(path, f"Monthly-Sales-Analysis[{branch_name}].csv")
+                    if path:
+                        monthly_sales.save_analysis(path)
+                    else:
+                        self._print("The loaction is not found !", alignment='center', color=Fore.RED)
+                        input("\nPress enter to continue....")
+                else:
+                    path = str(self._input("Enter save location (X:\\folder name\\) > "))
+                    path = self.__location_replacer(path, "Monthly-Sales-Analysis.csv")
+                    if path:
+                        monthly_sales.save_analysis(path, all=True)
+                    else:
+                        self._print("The loaction is not found !", alignment='center', color=Fore.RED)
+                        input("\nPress enter to continue....")
+        
+        elif val == 2:
             if branch_name:
-                path = str(self._input("Enter save location (X:\\folder name\\) > "))
-                path = self.__location_replacer(path, f"Monthly-Sales-Analysis[{branch_name}].csv")
-                if path:
-                    monthly_sales.save_analysis(path)
-                else:
-                    self._print("The loaction is not found !", alignment='center', color=Fore.RED)
-                    input("\nPress enter to continue....")
+                monthly_sales.display_graph()
             else:
-                path = str(self._input("Enter save location (X:\\folder name\\) > "))
-                path = self.__location_replacer(path, "Monthly-Sales-Analysis.csv")
-                if path:
-                    monthly_sales.save_analysis(path, all=True)
-                else:
-                    self._print("The loaction is not found !", alignment='center', color=Fore.RED)
-                    input("\nPress enter to continue....")
+                monthly_sales.display_graph(all=True)
+        
+        else:
+            pass
 
     def __price_analysis(self, csv_file, all=False):
         product_name = None
