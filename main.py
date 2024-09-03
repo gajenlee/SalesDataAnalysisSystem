@@ -219,16 +219,23 @@ class Main(InterfaceOfConsole):
 
     def __product_perference_analysis(self, csv_file):
         product_per = ProdectPreferenceAnalysis(csv_file)
-        print()
-        product_per.display_analysis()
-        if self._user_to_ask():
-            path = str(self._input("Enter save location (X:\\folder name\\) > "))
-            path = self.__location_replacer(path, "Product-Perference-Analysis.csv")
-            if path:
-                product_per.save_analysis(path)
-            else:
-                self._print("The loaction is not found !", alignment='center', color=Fore.RED)
-                input("\nPress enter to continue....")
+        self._view_analysis()
+        val = int(self._input())
+        if val == 1:
+            print()
+            product_per.display_analysis()
+            if self._user_to_ask():
+                path = str(self._input("Enter save location (X:\\folder name\\) > "))
+                path = self.__location_replacer(path, "Product-Perference-Analysis.csv")
+                if path:
+                    product_per.save_analysis(path)
+                else:
+                    self._print("The loaction is not found !", alignment='center', color=Fore.RED)
+                    input("\nPress enter to continue....")
+        elif val == 2:
+            product_per.display_graph()
+        else:
+            pass
 
     def __distribution_analysis(self, csv_file):
         distribution = AnalysisOfDistribution(csv_file)

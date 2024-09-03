@@ -5,6 +5,7 @@ from .analysis import Analysis
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import mplcursors
 
 
 class ProdectPreferenceAnalysis(FileData, Analysis):
@@ -47,8 +48,42 @@ class ProdectPreferenceAnalysis(FileData, Analysis):
     
     def save_analysis(self, file_name):
         headers = ['Product', "Quantity"]
-        rows = [{ "Product": product, "Quantity":int(qty)} for product, qty in self.__prodect_preference_analysis(self.__file_name).items()]
+        rows = [
+            { 
+                "Product": product, 
+                "Quantity":int(qty)
+            } 
+            for product, qty in self.__prodect_preference_analysis(self.__file_name).items()
+        ]
         self._save_sales_data(file_name, rows, headers)
     
     def display_graph(self):
-        pass
+        rows = [
+            [ 
+                product, 
+                int(qty)
+            ] 
+            for product, qty in self.__prodect_preference_analysis(self.__file_name).items()
+        ]
+
+        x_values = [x[0] for x in rows]
+        y_values = [y[1] for y in rows]
+
+        fig, ax = plt.subplots()
+        plot = ax.plot(x_values, y_values, marker='o')
+
+        cursor = mplcursors.cursor(plot, hover=True)
+
+        @cursor.connect("add")
+        def on_add(sl):
+            index = int(sl.index)
+            sl.annotation.set(text=f"Product: {x_values[index]}\nQuantity: {y_values[index]}", fontsize=10)
+
+        plt.title("Product Perference Analysis")
+        plt.xlabel("Products")
+        plt.ylabel("Quantity")
+        plt.grid(True)
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()
+        plt.show()
+        
