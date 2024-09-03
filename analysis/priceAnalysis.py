@@ -4,6 +4,7 @@ from .analysis import Analysis
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import mplcursors
 
 class PriceAnalysis(FileData, Analysis):
     
@@ -71,12 +72,59 @@ class PriceAnalysis(FileData, Analysis):
 
     def save_analysis(self, file_name, all=False):
         if all and self.__product_name:
-            rows = [{ "Product": product, "Average Price":float(f"{price:.2f}")} for product, price in self.__price_analysis(self.__file_name, self.__product_name).items()]
+            rows = [
+                { 
+                    "Product": product, 
+                    "Average Price":float(f"{price:.2f}")
+                } 
+                for product, price in self.__price_analysis(self.__file_name, self.__product_name).items()
+            ]
         else:
-            rows = [{ "Product": product, "Average Price":float(f"{price:.2f}")} for product, price in self.__price_analysis_all(self.__file_name).items()]
+            rows = [
+                { 
+                    "Product": product, 
+                    "Average Price":float(f"{price:.2f}")
+                } for product, price in self.__price_analysis_all(self.__file_name).items()
+            ]
 
         headers = ["Product", "Average Price"]
         self._save_sales_data(file_name, rows, headers)
     
-    def display_graph(self):
-        pass
+    def display_graph(self, all=False):
+        if all:
+            rows = [
+                [ 
+                    product, 
+                    float(f"{price:.2f}")
+                ] for product, price in self.__price_analysis_all(self.__file_name).items()
+            ]
+        else:
+            rows = [
+                [ 
+                    product, 
+                    float(f"{price:.2f}")
+                ] 
+                for product, price in self.__price_analysis(self.__file_name, self.__product_name).items()
+            ]
+        
+        x_value = [x[0] for x in rows]
+        y_value = [y[1] for y in rows]
+
+        fig, ax = plt.subplots()
+        scatter = ax.plot(x_value, y_value, marker='o')
+
+        cursor = mplcursors.cursor(scatter, hover=True)
+
+        @cursor.connect("add")
+        def on_add(sl):
+            index = sl.index
+            sl.annotation.set(text=f"Product: {x_value[index]}\nAVG Price: {y_value[index]}", fontsize=10)
+
+        plt.subplots_adjust(bottom=0.22)
+        plt.title("Price Analysis")
+        plt.xlabel("Products")
+        plt.ylabel("Average Prices")
+        plt.xticks(rotation=45, ha='right')
+        plt.grid(True)
+        plt.show()
+        
