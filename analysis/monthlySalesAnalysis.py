@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import mplcursors
+import seaborn as sns
 
 
 import numpy as np
@@ -104,7 +105,7 @@ class MonthlySalesAnalysis(FileData, Analysis):
         rows.sort(key=lambda x : x['Branch'])
         self._save_sales_data(file_name, rows, self.__headers)
     
-    def display_graph(self):
+    def data_graph(self):
 
         rows = [
             [ 
@@ -164,6 +165,26 @@ class MonthlySalesAnalysis(FileData, Analysis):
         plt.grid(True)
 
         plt.tight_layout()
+        plt.show()
+
+    def corr_graph(self):
+        rows = [
+            { 
+                "branch": branch[-1],
+                "sales": float(f"{sales[-1]:.2f}"),
+                "month": datetime.strptime(month[-1], "%Y/%m").date(), 
+            } 
+            for branch, month, sales in zip(self.__branch_sales_analysis[self.__headers[0]].items(),
+                                     self.__branch_sales_analysis[self.__headers[1]].items(),
+                                     self.__branch_sales_analysis[self.__headers[-1]].items())
+        ]
+        dataFrame = pd.DataFrame(rows)
+        dataFrame['month'] = pd.to_datetime(dataFrame['month'], format='%Y/%m').map(pd.Timestamp.toordinal)
+        correlation_analysis = dataFrame[['sales', 'month']].corr()
+
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(correlation_analysis, annot=True, cmap='coolwarm', fmt='.2f')
+        plt.title('Correlation Matrix')
         plt.show()
 
     # Define a custom format function

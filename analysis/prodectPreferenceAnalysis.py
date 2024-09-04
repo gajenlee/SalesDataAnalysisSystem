@@ -6,6 +6,7 @@ from .analysis import Analysis
 import pandas as pd
 import matplotlib.pyplot as plt
 import mplcursors
+import seaborn as sns
 
 
 class ProdectPreferenceAnalysis(FileData, Analysis):
@@ -63,7 +64,7 @@ class ProdectPreferenceAnalysis(FileData, Analysis):
         ]
         self._save_sales_data(file_name, rows, self.__headers)
     
-    def display_graph(self):
+    def data_graph(self):
         rows = [
             [ 
                 product[-1], 
@@ -93,4 +94,31 @@ class ProdectPreferenceAnalysis(FileData, Analysis):
         plt.xticks(rotation=45, ha="right")
         plt.tight_layout()
         plt.show()
+    
+    def corr_graph(self):
+        rows = [
+            { 
+                self.__headers[0]: product[-1], 
+                self.__headers[1]: int(qty[-1])
+            } 
+            for product, qty in zip(self.__prodect_preference_analysis_data[self.__headers[0]].items(),
+                                    self.__prodect_preference_analysis_data[self.__headers[1]].items())
+        ]
+        data_frame = pd.DataFrame(rows)
+        df_encoded = pd.get_dummies(data_frame, columns=[self.__headers[0]])
+        df_grouped = df_encoded.groupby(df_encoded.index).sum()
+        correlation = df_grouped.corr()
+
+        product_correlation = correlation.iloc[1:, 1:]
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(product_correlation, annot=True, cmap='coolwarm', fmt='.2f', vmin=1, vmax=1, center=0)
+        plt.title('Correlation Matrix')
+        plt.tight_layout()
+        plt.show()
+
+        sns.clustermap(product_correlation, annot=True, cmap='coolwarm', vmin=-1, vmax=1, center=0)
+        plt.title('Product Correlation Clustermap')
+        plt.tight_layout()
+        plt.show()
+
         

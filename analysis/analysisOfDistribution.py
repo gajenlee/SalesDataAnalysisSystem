@@ -65,7 +65,7 @@ class AnalysisOfDistribution(FileData, Analysis):
             for branch, data in self.__distribution_analysis_data.items()]
         self._save_sales_data(file_name, rows, headers)
 
-    def display_graph(self):
+    def data_graph(self):
 
         plt.subplots_adjust(bottom=0.487, left=0.127)
 
@@ -84,6 +84,19 @@ class AnalysisOfDistribution(FileData, Analysis):
         plt.xlabel('Branch')
         plt.ylabel('Amount')
         plt.grid(True)
+        plt.show()
+    
+    def corr_graph(self):
+        rows = [
+            {"branch": branch, "amount": data['amount'], 'percentage': data['percentage']}
+            for branch, data in self.__distribution_analysis_data.items()
+        ]
+        dataFrame = pd.DataFrame(rows)
+        correlation_analysis = dataFrame[['amount', 'percentage']].corr()
+
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(correlation_analysis, annot=True, cmap='coolwarm', fmt='.2f')
+        plt.title('Correlation Matrix')
         plt.show()
     
     # Define a custom format function

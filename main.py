@@ -62,6 +62,7 @@ class InterfaceOfConsole:
         self._print(text, alignment='left')
 
     def _view_analysis(self):
+        self._clear()
         self._opening_header()
         text = """
 \n1. Table View
@@ -71,6 +72,17 @@ class InterfaceOfConsole:
         self._print(" *** Data View *** ", alignment='center', color=Fore.GREEN, width=100)
         self._print(text, alignment="left")
     
+    def _view_graph(self):
+        self._clear()
+        self._opening_header()
+        text = """
+\n1. Data Graph View
+2. Correlation Matrix Graph View
+3. Back
+"""
+        self._print(" *** Graph View *** ", alignment='center', color=Fore.GREEN, width=100)
+        self._print(text, alignment="left")
+
     def _main_opening_menu(self):
         self._opening_header()
         text = """
@@ -104,6 +116,13 @@ class InterfaceOfConsole:
         if val.lower() == 'y':
             return True
         return False
+
+    def _userInformationCorr(self):
+        self._print(
+            "To calculate a meaningful correlation, you need at least two data points, and ideally many more.",
+            alignment="center", color=Fore.RED)
+        print("Continue... ")
+        input()
     
 
 class Main(InterfaceOfConsole):
@@ -155,12 +174,20 @@ class Main(InterfaceOfConsole):
                         input("\nPress enter to continue....")
         
         elif val == 2:
-            monthly_sales.display_graph()
+            self._view_graph()
+            inp = int(self._input())
+
+            if inp == 1:
+                monthly_sales.data_graph()
+            elif inp == 2:
+                monthly_sales.corr_graph()
+            else:
+                pass
             
         else:
             pass
 
-    def __price_analysis(self, csv_file, all=False):
+    def __price_analysis(self, csv_file, corr_fun=None, all=False):
         product_name = None
 
         if all:
@@ -193,7 +220,15 @@ class Main(InterfaceOfConsole):
                         self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                         input("\nPress enter to continue....")
         elif val == 2:
-            price.display_graph()
+            self._view_graph()
+            inp = int(self._input())
+
+            if inp == 1:
+                price.data_graph()
+            elif inp == 2:
+                price.corr_graph(corr_fun)
+            else:
+                pass
 
         else:
             pass
@@ -215,7 +250,16 @@ class Main(InterfaceOfConsole):
                     self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                     input("\nPress enter to continue....")
         elif val == 2:
-            weekly_analysis.display_graph()
+            self._view_graph()
+            inp = int(self._input())
+
+            if inp == 1:
+                weekly_analysis.data_graph()
+            elif inp == 2:
+                weekly_analysis.corr_graph()
+            else:
+                pass
+
         else:
             pass
 
@@ -235,7 +279,16 @@ class Main(InterfaceOfConsole):
                     self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                     input("\nPress enter to continue....")
         elif val == 2:
-            product_per.display_graph()
+            self._view_graph()
+            inp = int(self._input())
+
+            if inp == 1:
+                product_per.data_graph()
+            elif inp == 2:
+                product_per.corr_graph()
+            else:
+                pass
+
         else:
             pass
 
@@ -258,7 +311,15 @@ class Main(InterfaceOfConsole):
                     input("\nPress enter to continue....")
         
         elif val == 2:
-            distribution.display_graph()
+            self._view_graph()
+            inp = int(self._input())
+
+            if inp == 1:
+                distribution.data_graph()
+            elif inp == 2:
+                distribution.corr_graph()
+            else:
+                pass
         
         else:
             pass
@@ -337,7 +398,7 @@ class Main(InterfaceOfConsole):
                     if val == 1:
                         csv_file = str(self._input("\nEnter the CSV file path to process the data > "))
                         if self.__chech_csv_file(csv_file):
-                            self.__price_analysis(csv_file)
+                            self.__price_analysis(csv_file, corr_fun=self._userInformationCorr)
                         else:
                             self._print("The CSV file is not found !", alignment='center', color=Fore.RED)
                             input("\nPress enter to continue....")
@@ -345,7 +406,7 @@ class Main(InterfaceOfConsole):
                     elif val == 2:
                         csv_file = str(self._input("\nEnter the CSV file path to process the data > "))
                         if self.__chech_csv_file(csv_file):
-                            self.__price_analysis(csv_file, True)
+                            self.__price_analysis(csv_file, all=True)
                         else:
                             self._print("The CSV file is not found !", alignment='center', color=Fore.RED)
                             input("\nPress enter to continue....")

@@ -5,13 +5,15 @@ from .analysis import Analysis
 import pandas as pd
 import matplotlib.pyplot as plt
 import mplcursors
+import seaborn as sns
+import numpy as np
 
 class PriceAnalysis(FileData, Analysis):
     
     __analysis_data = None
     __file_name = None
     __product_name = None
-    __headers = ['Product', "Average Price"]
+    __headers = ['Product', "Average Price", "Total Quantity"]
 
     def __init__(self, file_name, product=None):
         super().__init__(file_name)
@@ -26,6 +28,7 @@ class PriceAnalysis(FileData, Analysis):
         sales_data = self._load_sales_data(file_name)
         analysis_data = defaultdict(float)
         prices_list = defaultdict(float)
+        qty_list = defaultdict(float)
 
         common_element_product = list(set(self._global_fieldname) & set(self._product))
         common_element_amount = list(set(self._global_fieldname) & set(self._amount))
@@ -35,15 +38,17 @@ class PriceAnalysis(FileData, Analysis):
             if common_element_product:
                 if row[common_element_product[0]] in prices_list:
                     prices_list[row[common_element_product[0]]].append(row[common_element_amount[0]] / row[common_element_qty[0]])
+                    qty_list[row[common_element_product[0]]].append(row[common_element_qty[0]])
                 else:
                     prices_list[row[common_element_product[0]]] = [row[common_element_amount[0]]/row[common_element_qty[0]]]
+                    qty_list[row[common_element_product[0]]] = [row[common_element_qty[0]]]
         
         for product in prices_list:
-            analysis_data[product] = sum(prices_list[product]) / len(prices_list[product])
+            analysis_data[product] = [sum(prices_list[product]) / len(prices_list[product]), sum(qty_list[product])]
 
         rows = [
-            [product, avg]
-            for product, avg in analysis_data.items()
+            [product, list_val[0], list_val[1]]
+            for product, list_val in analysis_data.items()
         ]
 
         return self._clear_data(rows, self.__headers).to_dict() 
@@ -53,17 +58,16 @@ class PriceAnalysis(FileData, Analysis):
         analysis_data = defaultdict(float)
         sales_data = self._load_sales_data(file_name)
         prices = [row['amount'] / row['quantity'] for row in sales_data if row['product'].lower() == product.lower()]
+        qty = [row['quantity'] for row in sales_data if row['product'].lower() == product.lower()]
         if prices:
-            average_price = sum(prices) / len(prices)
-            analysis_data[product] = average_price
+            analysis_data[product] = [sum(prices) / len(prices), sum(qty)]
             
         else:
-            average_price = 0
-            analysis_data[product] = average_price
+            analysis_data[product] = [0, 0]
         
         rows = [
-            [product, avg]
-            for product, avg in analysis_data.items()
+            [product, list_val[0], list_val[1]]
+            for product, list_val in analysis_data.items()
         ]
 
         return self._clear_data(rows, self.__headers).to_dict() 
@@ -72,10 +76,11 @@ class PriceAnalysis(FileData, Analysis):
 
         # Extract rows
         rows = [
-            [product[-1], f"{avg[-1]:,.2f}"]
-            for product, avg in zip(
+            [product[-1], f"{avg[-1]:,.2f}", f"{tot[-1]:,}"]
+            for product, avg, tot in zip(
                 self.__analysis_data[self.__headers[0]].items(),
-                self.__analysis_data[self.__headers[-1]].items())
+                self.__analysis_data[self.__headers[1]].items(),
+                self.__analysis_data[self.__headers[2]].items())
         ]
         rows.sort()
 
@@ -86,29 +91,34 @@ class PriceAnalysis(FileData, Analysis):
         # Extract rows
         rows = [
             { 
-                "Product": product[-1], 
-                "Average Price":float(f"{avg[-1]:.2f}")
+                self.__headers[0]: product[-1], 
+                self.__headers[1]: float(f"{avg[-1]:.2f}"),
+                self.__headers[2]: tot[-1]
             }
-            for product, avg in zip(
+            for product, avg, tot in zip(
                 self.__analysis_data[self.__headers[0]].items(),
-                self.__analysis_data[self.__headers[-1]].items())
+                self.__analysis_data[self.__headers[1]].items(),
+                self.__analysis_data[self.__headers[2]].items())
         ]
         rows.sort(key=lambda x : x[self.__headers[0]])
         self._save_sales_data(file_name, rows, self.__headers)
     
-    def display_graph(self):
+    def data_graph(self):
         rows = [
             [ 
                 product[-1], 
-                float(f"{avg[-1]:.2f}")
+                float(f"{avg[-1]:.2f}"),
+                tot[-1]
             ]
-            for product, avg in zip(
+            for product, avg, tot in zip(
                 self.__analysis_data[self.__headers[0]].items(),
-                self.__analysis_data[self.__headers[-1]].items())
+                self.__analysis_data[self.__headers[1]].items(),
+                self.__analysis_data[self.__headers[2]].items())
         ]
         
-        x_value = [x[0] for x in rows]
-        y_value = [y[1] for y in rows]
+        x_value = [row[0] for row in rows]
+        y_value = [row[1] for row in rows]
+        qty = [row[2] for row in rows]
 
         fig, ax = plt.subplots()
         scatter = ax.plot(x_value, y_value, marker='o')
@@ -117,8 +127,8 @@ class PriceAnalysis(FileData, Analysis):
 
         @cursor.connect("add")
         def on_add(sl):
-            index = sl.index
-            sl.annotation.set(text=f"Product: {x_value[index]}\nAVG Price: {y_value[index]}", fontsize=10)
+            index = int(sl.index)
+            sl.annotation.set(text=f"Product: {x_value[index]}\nAVG Price: {y_value[index]}\nTotal Qty: {qty[index]}", fontsize=10)
 
         plt.subplots_adjust(bottom=0.22)
         plt.title("Price Analysis")
@@ -128,3 +138,27 @@ class PriceAnalysis(FileData, Analysis):
         plt.grid(True)
         plt.show()
         
+    def corr_graph(self, corr_fun=None):
+        rows = [
+            { 
+                self.__headers[0]: product[-1], 
+                self.__headers[1]: float(f"{avg[-1]:.2f}"),
+                self.__headers[2]: tot[-1]
+            }
+            for product, avg, tot in zip(
+                self.__analysis_data[self.__headers[0]].items(),
+                self.__analysis_data[self.__headers[1]].items(),
+                self.__analysis_data[self.__headers[2]].items())
+        ]
+        if len(rows) <= 1:
+            if corr_fun != None: corr_fun()
+        else:
+            dataFrame = pd.DataFrame(rows)
+            dataFrame[self.__headers[1]] = dataFrame[self.__headers[1]].map(lambda x : float(x) )
+            dataFrame[self.__headers[-1]] = dataFrame[self.__headers[-1]].map(lambda x : int(x) )
+            correlation_analysis = dataFrame[[self.__headers[1], self.__headers[-1]]].corr()
+            
+            plt.figure(figsize=(8, 6))
+            sns.heatmap(correlation_analysis, annot=True, cmap='coolwarm', fmt='.2f')
+            plt.title('Correlation Matrix')
+            plt.show()

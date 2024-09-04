@@ -13,9 +13,13 @@ class Analysis(ABC):
         raise NotImplementedError
     
     @abstractmethod
-    def display_graph(self):
+    def data_graph(self):
         raise NotImplementedError
     
+    @abstractmethod
+    def corr_graph(self):
+        raise NotImplementedError
+
     @dispatch(dict)
     def _clear_data(self, data:dict):
         dataFrame = pd.DataFrame(data)

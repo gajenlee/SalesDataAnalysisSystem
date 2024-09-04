@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import mplcursors
+import seaborn as sns
 
 class WeeklySalesAnalysis(FileData, Analysis):
     
@@ -65,7 +66,7 @@ class WeeklySalesAnalysis(FileData, Analysis):
         rows.sort(key=lambda x:x["Week"])
         self._save_sales_data(file_name, rows, self.__headers)
     
-    def display_graph(self):
+    def data_graph(self):
         rows = [
             [ 
                 week[-1], 
@@ -108,3 +109,29 @@ class WeeklySalesAnalysis(FileData, Analysis):
         """
 
         return f'{x * 1e-6:.1f}M' 
+
+    def corr_graph(self):
+        rows = [
+            { 
+                self.__headers[0]: week[-1], 
+                self.__headers[-1]: float(f"{sales[-1]:.2f}")
+            } 
+            for week, sales in zip(
+            self.__weekly_sales_analysis_data[self.__headers[0]].items(),
+            self.__weekly_sales_analysis_data[self.__headers[-1]].items()
+            )
+        ]
+        data_frame = pd.DataFrame(rows)
+        data_frame[self.__headers[0]] = pd.to_datetime(data_frame[self.__headers[0]], format='%Y/%m/%d').map(pd.Timestamp.toordinal)
+        correlation_analysis = data_frame[[self.__headers[0], self.__headers[-1]]].corr()
+
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(correlation_analysis, annot=True, cmap='coolwarm', fmt='.2f')
+        plt.title('Correlation Matrix')
+        plt.show()
+
+        sns.clustermap(correlation_analysis, annot=True, cmap='coolwarm', vmin=-1, vmax=1, center=0)
+        plt.title('Product Correlation Clustermap')
+        plt.tight_layout()
+        plt.show()
+        
