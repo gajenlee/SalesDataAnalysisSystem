@@ -52,7 +52,6 @@ class PriceAnalysis(FileData, Analysis):
         ]
 
         return self._clear_data(rows, self.__headers).to_dict() 
-        
 
     def __price_analysis(self, file_name, product):
         analysis_data = defaultdict(float)

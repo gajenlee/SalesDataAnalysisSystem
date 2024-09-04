@@ -107,7 +107,6 @@ class WeeklySalesAnalysis(FileData, Analysis):
         Convert to millions and add 'M'
 
         """
-
         return f'{x * 1e-6:.1f}M' 
 
     def corr_graph(self):

@@ -21,17 +21,15 @@ class Analysis(ABC):
         raise NotImplementedError
 
     @dispatch(dict)
-    def _clear_data(self, data:dict):
+    def _clear_data(self, data:dict) -> pd.DataFrame:
         dataFrame = pd.DataFrame(data)
         dataFrame.dropna(inplace=True)
         dataFrame.drop_duplicates(inplace=True)
-
         return dataFrame
 
     @dispatch(list, list)
-    def _clear_data(self, row: list, columns: list):
+    def _clear_data(self, row: list, columns: list)-> pd.DataFrame:
         dataFrame = pd.DataFrame(row, columns=columns)
         dataFrame.dropna(inplace=True)
         dataFrame.drop_duplicates(inplace=True)
-
         return dataFrame

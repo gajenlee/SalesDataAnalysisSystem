@@ -51,7 +51,6 @@ class MonthlySalesAnalysis(FileData, Analysis):
 
         return self._clear_data(rows, self.__headers).to_dict()
 
-
     def __monthly_sales_branch(self, branch, file_name):
         sales_data = self._load_sales_data(file_name)
         montly_sales = defaultdict(float)

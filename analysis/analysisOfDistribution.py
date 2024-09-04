@@ -66,9 +66,7 @@ class AnalysisOfDistribution(FileData, Analysis):
         self._save_sales_data(file_name, rows, headers)
 
     def data_graph(self):
-
         plt.subplots_adjust(bottom=0.487, left=0.127)
-
         rows = [[branch, float(f"{data['amount']:.3f}")] for branch, data in self.__distribution_analysis_data.items()]
         x = [row[0] for row in rows]
         y = [round(row[-1]) for row in rows]

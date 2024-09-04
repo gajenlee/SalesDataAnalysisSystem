@@ -2,7 +2,6 @@ from .components.fileData import *
 from tabulate import tabulate
 from .analysis import Analysis
 
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import mplcursors
