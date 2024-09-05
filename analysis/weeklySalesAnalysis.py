@@ -1,4 +1,4 @@
-from .components.fileData import *
+from .components.csv_processor import *
 from tabulate import tabulate
 from .analysis import Analysis
 
@@ -9,7 +9,7 @@ import matplotlib.ticker as ticker
 import mplcursors
 import seaborn as sns
 
-class WeeklySalesAnalysis(FileData, Analysis):
+class WeeklySalesAnalysis(CSVProcessor, Analysis):
     
     __weekly_sales_analysis_data = None
     __file_name = None

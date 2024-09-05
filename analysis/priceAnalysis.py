@@ -1,5 +1,5 @@
 from tabulate import tabulate
-from .components.fileData import *
+from .components.csv_processor import *
 from .analysis import Analysis
 
 import pandas as pd
@@ -8,7 +8,7 @@ import mplcursors
 import seaborn as sns
 import numpy as np
 
-class PriceAnalysis(FileData, Analysis):
+class PriceAnalysis(CSVProcessor, Analysis):
     
     __analysis_data = None
     __file_name = None

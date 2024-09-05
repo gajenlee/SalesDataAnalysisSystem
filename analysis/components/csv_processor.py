@@ -1,8 +1,9 @@
 import csv
 from collections import defaultdict
 from datetime import datetime
+from .dataProcessor import DataProcessor
 
-class FileData:
+class CSVProcessor(DataProcessor):
 
     _global_fieldname = []
     _amount = ["amount", "rs.", "rs", "revenue", "profit"]

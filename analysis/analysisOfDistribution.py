@@ -1,4 +1,4 @@
-from .components.fileData import *
+from .components.csv_processor import *
 from tabulate import tabulate
 from .analysis import Analysis
 
@@ -9,7 +9,7 @@ import seaborn as sns
 
 import numpy as np
 
-class AnalysisOfDistribution(FileData, Analysis):
+class AnalysisOfDistribution(CSVProcessor, Analysis):
     __distribution_analysis_data = None
     __file_name = None
 

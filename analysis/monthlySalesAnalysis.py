@@ -1,4 +1,4 @@
-from .components.fileData import *
+from .components.csv_processor import *
 from tabulate import tabulate
 from .analysis import Analysis
 
@@ -12,7 +12,7 @@ import seaborn as sns
 
 import numpy as np
 
-class MonthlySalesAnalysis(FileData, Analysis):
+class MonthlySalesAnalysis(CSVProcessor, Analysis):
     __branch_sales_analysis = defaultdict(float)
     __file_name = None
     __branch_name = None
