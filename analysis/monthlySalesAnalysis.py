@@ -186,6 +186,11 @@ class MonthlySalesAnalysis(CSVProcessor, Analysis):
         plt.title('Correlation Matrix')
         plt.show()
 
+        sns.clustermap(correlation_analysis, annot=True, cmap='coolwarm', vmin=-1, vmax=1, center=0)
+        plt.title('Correlation Clustermap')
+        plt.tight_layout()
+        plt.show()
+
     # Define a custom format function
     def __millions(self, x, pos):
         """
