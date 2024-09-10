@@ -22,6 +22,17 @@ class CSVProcessor(DataProcessor):
     
     
     def _load_sales_data(self, file_name:str) -> list:
+
+        """
+            Arguments: 
+                file_name: it should be a CSV file path.
+
+            Return: List type data.
+
+            It used to load the data from the CSV file.
+        """
+
+
         sales_data = []
         try:
             with open(r"{}".format(file_name), mode='r') as file:
@@ -40,6 +51,19 @@ class CSVProcessor(DataProcessor):
             
     
     def _save_sales_data(self, file_name:str, sales_date:list, header=None):
+
+        """
+            Arguments: 
+                file_name: it should be a CSV file path.
+                sales_data: it should be list type data.
+                header: it should be list type and it used to header of the data rows.
+
+            Return: List type data
+
+            It used to save data into the CSV file.
+        
+        """
+
         try:
             with open(r"{}".format(file_name), mode='w', newline='') as file:
                 if header:
