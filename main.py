@@ -8,6 +8,7 @@ from cli_ui import *
 from colorama import Fore
 import sys, re
 
+from analysisContext import AnalysisContext
 
 class Main(InterfaceOfConsole):
     
@@ -27,24 +28,24 @@ class Main(InterfaceOfConsole):
         monthly_sales = None
 
         if all:
-            monthly_sales = MonthlySalesAnalysis(csv_file)
+            monthly_sales = AnalysisContext(MonthlySalesAnalysis(csv_file))
         else:
             branch_name = str(self._input("Enter the branch name > "))
-            monthly_sales = MonthlySalesAnalysis(csv_file, branch_name)
+            monthly_sales = AnalysisContext(MonthlySalesAnalysis(csv_file, branch_name))
         print()
 
         self._view_analysis()
         val = int(self._input())
         if val == 1:
             
-            monthly_sales.display_analysis()
+            monthly_sales.perform_analysis()
 
             if self._user_to_ask():
                 if branch_name:
                     path = str(self._input("Enter save location (X:\\folder name\\) > "))
                     path = self.__location_replacer(path, f"Monthly-Sales-Analysis[{branch_name}].csv")
                     if path:
-                        monthly_sales.save_analysis(path)
+                        monthly_sales.perform_save_analysis(path)
                     else:
                         self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                         input("\nPress enter to continue....")
@@ -52,7 +53,7 @@ class Main(InterfaceOfConsole):
                     path = str(self._input("Enter save location (X:\\folder name\\) > "))
                     path = self.__location_replacer(path, "Monthly-Sales-Analysis.csv")
                     if path:
-                        monthly_sales.save_analysis(path)
+                        monthly_sales.perform_save_analysis(path)
                     else:
                         self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                         input("\nPress enter to continue....")
@@ -62,9 +63,9 @@ class Main(InterfaceOfConsole):
             inp = int(self._input())
 
             if inp == 1:
-                monthly_sales.data_graph()
+                monthly_sales.perform_graph_analysis()
             elif inp == 2:
-                monthly_sales.corr_graph()
+                monthly_sales.perform_corr_analysis()
             else:
                 pass
             
@@ -75,23 +76,23 @@ class Main(InterfaceOfConsole):
         product_name = None
 
         if all:
-            price = PriceAnalysis(csv_file)
+            price = AnalysisContext(PriceAnalysis(csv_file))
         else:
             product_name = str(self._input("Enter the product name > "))
-            price = PriceAnalysis(csv_file, product_name)
+            price = AnalysisContext(PriceAnalysis(csv_file, product_name))
 
         self._view_analysis()
         val = int(self._input())
 
         if val == 1:
             print()
-            price.display_analysis()
+            price.perform_analysis()
             if self._user_to_ask():
                 if product_name:
                     path = str(self._input("Enter save location (X:\\folder name\\) > "))
                     path = self.__location_replacer(path, f"Price-Analysis[{product_name}].csv")
                     if path:
-                        price.save_analysis(path)
+                        price.perform_save_analysis(path)
                     else:
                         self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                         input("\nPress enter to continue....")
@@ -99,7 +100,7 @@ class Main(InterfaceOfConsole):
                     path = str(self._input("Enter save location (X:\\folder name\\) > "))
                     path = self.__location_replacer(path, "Price-Analysis.csv")
                     if path:
-                        price.save_analysis(path)
+                        price.perform_save_analysis(path)
                     else:
                         self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                         input("\nPress enter to continue....")
@@ -108,9 +109,9 @@ class Main(InterfaceOfConsole):
             inp = int(self._input())
 
             if inp == 1:
-                price.data_graph()
+                price.perform_graph_analysis()
             elif inp == 2:
-                price.corr_graph(corr_fun)
+                price.perform_corr_analysis(corr_fun)
             else:
                 pass
 
@@ -118,18 +119,18 @@ class Main(InterfaceOfConsole):
             pass
     
     def __weekly_sales_analysis(self, csv_file):
-        weekly_analysis = WeeklySalesAnalysis(csv_file)
+        weekly_analysis = AnalysisContext(WeeklySalesAnalysis(csv_file))
         self._view_analysis()
         val = int(self._input())
 
         if val == 1:
             print()
-            weekly_analysis.display_analysis()
+            weekly_analysis.perform_analysis()
             if self._user_to_ask():
                 path = str(self._input("Enter save location (X:\\folder name\\) > "))
                 path = self.__location_replacer(path, "Weekly-Sales-Analysis.csv")
                 if path:
-                    weekly_analysis.save_analysis(path)
+                    weekly_analysis.perform_save_analysis(path)
                 else:
                     self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                     input("\nPress enter to continue....")
@@ -138,9 +139,9 @@ class Main(InterfaceOfConsole):
             inp = int(self._input())
 
             if inp == 1:
-                weekly_analysis.data_graph()
+                weekly_analysis.perform_graph_analysis()
             elif inp == 2:
-                weekly_analysis.corr_graph()
+                weekly_analysis.perform_corr_analysis()
             else:
                 pass
 
@@ -148,17 +149,17 @@ class Main(InterfaceOfConsole):
             pass
 
     def __product_perference_analysis(self, csv_file):
-        product_per = ProdectPreferenceAnalysis(csv_file)
+        product_per = AnalysisContext(ProdectPreferenceAnalysis(csv_file))
         self._view_analysis()
         val = int(self._input())
         if val == 1:
             print()
-            product_per.display_analysis()
+            product_per.perform_analysis()
             if self._user_to_ask():
                 path = str(self._input("Enter save location (X:\\folder name\\) > "))
                 path = self.__location_replacer(path, "Product-Perference-Analysis.csv")
                 if path:
-                    product_per.save_analysis(path)
+                    product_per.perform_save_analysis(path)
                 else:
                     self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                     input("\nPress enter to continue....")
@@ -167,9 +168,9 @@ class Main(InterfaceOfConsole):
             inp = int(self._input())
 
             if inp == 1:
-                product_per.data_graph()
+                product_per.perform_graph_analysis()
             elif inp == 2:
-                product_per.corr_graph()
+                product_per.perform_corr_analysis()
             else:
                 pass
 
@@ -177,19 +178,19 @@ class Main(InterfaceOfConsole):
             pass
 
     def __distribution_analysis(self, csv_file):
-        distribution = AnalysisOfDistribution(csv_file)
+        distribution = AnalysisContext(AnalysisOfDistribution(csv_file))
         print()
 
         self._view_analysis()
         val = int(self._input())
         if val == 1:
-            distribution.display_analysis()
+            distribution.perform_analysis()
         
             if self._user_to_ask():
                 path = str(self._input("Enter save location (X:\\folder name\\) > "))
                 path = self.__location_replacer(path, "DistributioAnalysis.csv")
                 if path:
-                    distribution.save_analysis(path)
+                    distribution.perform_save_analysis(path)
                 else:
                     self._print("The loaction is not found !", alignment='center', color=Fore.RED)
                     input("\nPress enter to continue....")
@@ -199,9 +200,9 @@ class Main(InterfaceOfConsole):
             inp = int(self._input())
 
             if inp == 1:
-                distribution.data_graph()
+                distribution.perform_graph_analysis()
             elif inp == 2:
-                distribution.corr_graph()
+                distribution.perform_corr_analysis()
             else:
                 pass
         
