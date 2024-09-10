@@ -3,7 +3,8 @@ from analysis.analysis import Analysis
 class AnalysisContext:
     
     def __init__(self, strategy: Analysis):
-        self._strategy = strategy
+        if strategy is not None: 
+            self._strategy = strategy
     
     def set_strategy(self, strategy: Analysis):
         self._strategy = strategy

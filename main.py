@@ -11,7 +11,7 @@ import sys, re
 from analysisContext import AnalysisContext
 
 class Main(InterfaceOfConsole):
-    
+
     def __init__(self):
         super().__init__()
     
@@ -25,13 +25,13 @@ class Main(InterfaceOfConsole):
     
     def __monthly_sales_analysis(self, csv_file, all=False):
         branch_name = None
-        monthly_sales = None
+        monthly_sales = AnalysisContext(None)
 
         if all:
-            monthly_sales = AnalysisContext(MonthlySalesAnalysis(csv_file))
+            monthly_sales.set_strategy(MonthlySalesAnalysis(csv_file))
         else:
             branch_name = str(self._input("Enter the branch name > "))
-            monthly_sales = AnalysisContext(MonthlySalesAnalysis(csv_file, branch_name))
+            monthly_sales.set_strategy(MonthlySalesAnalysis(csv_file, branch_name))
         print()
 
         self._view_analysis()
@@ -74,12 +74,13 @@ class Main(InterfaceOfConsole):
 
     def __price_analysis(self, csv_file, corr_fun=None, all=False):
         product_name = None
+        price = AnalysisContext(None)
 
         if all:
-            price = AnalysisContext(PriceAnalysis(csv_file))
+            price.set_strategy(PriceAnalysis(csv_file))
         else:
             product_name = str(self._input("Enter the product name > "))
-            price = AnalysisContext(PriceAnalysis(csv_file, product_name))
+            price.set_strategy(PriceAnalysis(csv_file, product_name))
 
         self._view_analysis()
         val = int(self._input())
