@@ -5,16 +5,16 @@ from analysis.prodectPreferenceAnalysis import ProdectPreferenceAnalysis
 
 # Analysis
 def test_product_preference_analysis():
-    context = AnalysisContext(ProdectPreferenceAnalysis("D:/sales_data.csv"))
+    context = AnalysisContext(ProdectPreferenceAnalysis('./sample_data/sales_data.csv'))
     assert context.perform_analysis() == True
 
 # Save Analysis
 def test_product_preference_analysis_save():
-    context = AnalysisContext(ProdectPreferenceAnalysis("D:/sales_data.csv"))
-    assert context.perform_save_analysis("C:/Users/gajen/OneDrive/Desktop/test_product_preference_analysis.csv") == True
+    context = AnalysisContext(ProdectPreferenceAnalysis('./sample_data/sales_data.csv'))
+    assert context.perform_save_analysis("./test_product_preference_analysis.csv") == True
 
 # Graph Analysis
 def test_product_preference_analysis_graph():
-    context = AnalysisContext(ProdectPreferenceAnalysis("D:/sales_data.csv"))
+    context = AnalysisContext(ProdectPreferenceAnalysis('./sample_data/sales_data.csv'))
     assert context.perform_graph_analysis() == True
 

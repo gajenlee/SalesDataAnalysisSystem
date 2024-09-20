@@ -5,7 +5,7 @@ import sys
 
 
 def test_cli_integration(monkeypatch):
-    inputs = iter([1, 2, 'D:/sales_data.csv', 1, "n", 3, 7])
+    inputs = iter([1, 2, './sample_data/sales_data.csv', 1, "n", 3, 7])
     monkeypatch.setattr("builtins.input", lambda _: next(inputs))
     # Capture stdout
     captured_output = StringIO()

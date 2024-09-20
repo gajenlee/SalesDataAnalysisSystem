@@ -13,12 +13,12 @@ class csv_processor(CSVProcessor):
         return self._save_sales_data(file_name, data, header)
 
 def test_load_date():
-    csv = csv_processor("D:/sales_data.csv")
+    csv = csv_processor('./sample_data/sales_data.csv')
     assert len(csv.load_data()) > 0
 
 def test_save_data():
-    csv = csv_processor("D:/sales_data.csv")
+    csv = csv_processor('./sample_data/sales_data.csv')
     data = csv.load_data()
     header = ["branch", "product", "quantity", "amount", "date"]
 
-    assert csv.save_data("D:/test_data.csv", data, header) == True
+    assert csv.save_data("./test_data.csv", data, header) == True

@@ -5,15 +5,15 @@ from analysis.analysisOfDistribution import AnalysisOfDistribution
 
 # Analysis
 def test_distribution_analysis():
-    context = AnalysisContext(AnalysisOfDistribution("D:/sales_data.csv"))
+    context = AnalysisContext(AnalysisOfDistribution('./sample_data/sales_data.csv'))
     assert context.perform_analysis() == True
 
 # Save Analysis
 def test_distribution_analysis_save():
-    context = AnalysisContext(AnalysisOfDistribution("D:/sales_data.csv"))
-    assert context.perform_save_analysis("C:/Users/gajen/OneDrive/Desktop/test_distribution_analysis.csv") == True
+    context = AnalysisContext(AnalysisOfDistribution('./sample_data/sales_data.csv'))
+    assert context.perform_save_analysis("./test_distribution_analysis.csv") == True
 
 # Graph Analysis
 def test_distribution_analysis_graph():
-    context = AnalysisContext(AnalysisOfDistribution("D:/sales_data.csv"))
+    context = AnalysisContext(AnalysisOfDistribution('./sample_data/sales_data.csv'))
     assert context.perform_graph_analysis() == True
