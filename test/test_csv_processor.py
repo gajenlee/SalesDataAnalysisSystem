@@ -1,5 +1,7 @@
 from analysis.components.csv_processor import CSVProcessor
 
+data_file = r'test\sample_data\sales_data.csv'
+
 class csv_processor(CSVProcessor):
 
     def __init__(self, file_name):
@@ -13,11 +15,11 @@ class csv_processor(CSVProcessor):
         return self._save_sales_data(file_name, data, header)
 
 def test_load_date():
-    csv = csv_processor('./sample_data/sales_data.csv')
+    csv = csv_processor(data_file)
     assert len(csv.load_data()) > 0
 
 def test_save_data():
-    csv = csv_processor('./sample_data/sales_data.csv')
+    csv = csv_processor(data_file)
     data = csv.load_data()
     header = ["branch", "product", "quantity", "amount", "date"]
 

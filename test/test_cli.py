@@ -3,17 +3,17 @@ import pytest
 from io import StringIO
 import sys
 
+data_file = r'test\sample_data\sales_data.csv'
 
 def test_cli_integration(monkeypatch):
-    inputs = iter([1, 2, './sample_data/sales_data.csv', 1, "n", 3, 7])
+    inputs = iter([1, 2, data_file, 1, "n", 3, 7])
     monkeypatch.setattr("builtins.input", lambda _: next(inputs))
     # Capture stdout
     captured_output = StringIO()
     sys.stdout = captured_output
 
     # Run the CLI
-    cli = Main()
-    cli.runMainLoop()
+    Main().runMainLoop()
 
     # Assert the expected output
     assert "" in captured_output.getvalue()
