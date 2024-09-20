@@ -50,7 +50,7 @@ class CSVProcessor(DataProcessor):
         return sales_data
             
     
-    def _save_sales_data(self, file_name:str, sales_date:list, header=None):
+    def _save_sales_data(self, file_name:str, sales_date:list, header=None) -> bool:
 
         """
             Arguments: 
@@ -73,9 +73,12 @@ class CSVProcessor(DataProcessor):
                 writer.writeheader()
                 for row in sales_date:
                     writer.writerow(row)
+            
+            return True
         
         except csv.Error as e:
             print(e)
+            return False
     
     def __get_csv_keys(self, file_name:str) -> list:
         key_list = []

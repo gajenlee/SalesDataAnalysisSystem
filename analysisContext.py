@@ -10,14 +10,35 @@ class AnalysisContext:
         self._strategy = strategy
     
     def perform_analysis(self):
-        self._strategy.display_analysis()
+        try:
+            self._strategy.display_analysis()
+            return True
+        except Exception as e:
+            print(e)
+            return False
     
     def perform_graph_analysis(self):
-        self._strategy.data_graph()
+        try:
+            self._strategy.data_graph()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+            
     
     def perform_corr_analysis(self, fun=None):
-        if fun is None: self._strategy.corr_graph()
-        self._strategy.corr_graph(fun)
+        try:
+            if fun is None: self._strategy.corr_graph()
+            self._strategy.corr_graph(fun)
+            return True
+        except Exception as e:
+            print(e)
+            return False
     
     def perform_save_analysis(self, file_name:str):
-        self._strategy.save_analysis(file_name)
+        try:
+            self._strategy.save_analysis(file_name)
+            return True
+        except Exception as e:
+            print(e)
+            return False

@@ -123,7 +123,7 @@ class MonthlySalesAnalysis(CSVProcessor, Analysis):
 
         unique_branches = list(set(branches))
         color_map = {
-            branch: color for branch, color in zip(unique_branches, plt.cm.get_cmap('tab10', len(unique_branches)).colors)
+            branch: color for branch, color in zip(unique_branches, plt.get_cmap('tab10', len(unique_branches)).colors)
         }
 
         colors = [color_map[branch] for branch in branches]
